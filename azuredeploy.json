@@ -1,0 +1,137 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "defaultValue": "West US 2",
+            "type": "string",
+            "allowedValues": [
+                "Australia East",
+                "Australia Southeast",
+                "Brazil South",
+                "Canada Central",
+                "Canada East",
+                "Central India",
+                "Central US",
+                "East Asia",
+                "East US 2",
+                "East US",
+                "Japan East",
+                "Japan West",
+                "Korea Central",
+                "Korea South",
+                "North Central US",
+                "North Europe",
+                "South Central US",
+                "South India",
+                "Southeast Asia",
+                "UK South",
+                "UK West",
+                "West Central US",
+                "West Europe",
+                "West India",
+                "West US 2",
+                "West US"
+            ]
+        },
+        "virtualMachineName": {
+            "type": "string"
+        },
+        "virtualMachineDiskType": {
+            "type": "string",
+            "defaultValue": "HDD",
+            "allowedValues": [
+                "SSD",
+                "HDD"
+            ],
+            "metadata": {
+                "description": "Premium disks (SSD) are backed by solid state drives and offer consistent, low-latency performance. Standard disks (HDD) are backed by magnetic drives and are preferable for applications where data is accessed infrequently."
+            }
+        },
+        "virtualMachineType": {
+            "type": "string",
+            "defaultValue": "Linux",
+            "allowedValues": [
+                "Linux",
+                "Windows"
+            ]
+        },
+        "virtualMachineSize": {
+            "type": "string",
+            "defaultValue": "Standard_NV6",
+            "allowedValues": [
+                "Standard_NV6",
+                "Standard_NV12",
+                "Standard_NV24",
+                "Standard_NC6",
+                "Standard_NC12",
+                "Standard_NC24",
+                "Standard_NC6s_v2",
+                "Standard_NC12s_v2",
+                "Standard_NC24s_v2",
+                "Standard_ND6s",
+                "Standard_ND12s",
+                "Standard_ND24s"
+            ],
+            "metadata": {
+                "description": "The VM size. Note that some VM sizes in the list are only available in some particular locations. Please check the availability and the price of the VM sizes at https://azure.microsoft.com/en-us/pricing/details/virtual-machines before deployment."
+            }
+        },
+        "adminUsername": {
+            "type": "string",
+            "metadata": {
+                "description": "Administrator user name for the virtual machines and the Active Directory domain."
+            }
+        },
+        "adminPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Administrator password for the virtual machines and the Active Directory domain"
+            }
+        },
+        "artifactsBaseUrl": {
+            "type": "string",
+            "defaultValue": "https://raw.githubusercontent.com/huzferd/deploy-to-azure/master"
+        }
+    },
+    "variables": {
+        "templatelink": "[concat(parameters('artifactsBaseUrl'),'/templates/',toLower(parameters('virtualMachineType')),'-vm-deploy.json')]"
+    },
+    "resources": [
+        {
+            "apiVersion": "2015-01-01",
+            "name": "vm-template",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('templatelink')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "location": {
+                        "value": "[parameters('location')]"
+                    },
+                    "virtualMachineName": {
+                        "value": "[parameters('virtualMachineName')]"
+                    },
+                    "virtualMachineDiskType": {
+                        "value": "[parameters('virtualMachineDiskType')]"
+                    },
+                    "virtualMachineSize": {
+                        "value": "[parameters('virtualMachineSize')]"
+                    },
+                    "adminUsername": {
+                        "value": "[parameters('adminUsername')]"
+                    },
+                    "adminPassword": {
+                        "value": "[parameters('adminPassword')]"
+                    },
+                    "artifactsBaseUrl": {
+                        "value": "[parameters('artifactsBaseUrl')]"
+                    }
+                }
+            }
+        }
+    ]
+}
